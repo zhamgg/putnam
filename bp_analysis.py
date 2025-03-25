@@ -537,7 +537,7 @@ if uploaded_file is not None:
                 st.info("NSCC Firm data not available")
         
         
-        # Replace the Data Explorer section in your streamlit_app.py file with this code
+# Replace the Data Explorer section in your streamlit_app.py file with this code
 
 # Raw data explorer
 st.markdown("<div class='section-header'>Data Explorer</div>", unsafe_allow_html=True)

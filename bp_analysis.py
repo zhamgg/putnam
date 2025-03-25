@@ -611,22 +611,7 @@ if uploaded_file is not None:
     
     
     
-    st.markdown("""
-    ## Instructions
-    
-    1. Click on the "Browse files" button above and select the boardingpass Excel file.
-    2. The dashboard will automatically filter for plans with "Putnam" in the Fund Name.
-    3. Use the filters in the sidebar to narrow down your analysis.
-    4. Explore the different tabs to see status breakdowns by Advisor, Recordkeeper, and NSCC Firm.
-    5. Download filtered data as CSV for further analysis if needed.
-    
-    This dashboard focuses on these key metrics:
-    - Percentage of plans in each status
-    - Status distribution by Advisor Firm
-    - Status distribution by Recordkeeper
-    - Status distribution by NSCC Firm
-    
-    """)
+   
 
 # Footer
 st.markdown("---")

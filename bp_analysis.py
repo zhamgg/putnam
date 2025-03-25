@@ -589,7 +589,6 @@ if uploaded_file is not None:
         st.markdown("<div class='section-header'>Data Explorer</div>", unsafe_allow_html=True)
         
         with st.expander("View and Filter Raw Data"):
-        with st.expander("View and Filter Raw Data"):
             # Select columns to display
             all_columns = df_filtered.columns.tolist()
             default_columns = ['Plan Name', 'Fund Name', 'Request Status', 'Status Detail', 

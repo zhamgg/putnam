@@ -537,74 +537,82 @@ if uploaded_file is not None:
                 st.info("NSCC Firm data not available")
         
         
-        # Raw data explorer
-        st.markdown("<div class='section-header'>Data Explorer</div>", unsafe_allow_html=True)
+        # Replace the Data Explorer section in your streamlit_app.py file with this code
+
+# Raw data explorer
+st.markdown("<div class='section-header'>Data Explorer</div>", unsafe_allow_html=True)
+
+with st.expander("View and Filter Raw Data"):
+    # Select columns to display
+    all_columns = df_filtered.columns.tolist()
+    default_columns = ['Plan Name', 'Fund Name', 'Request Status', 'Status Detail', 
+                       'Advisor Firm Name', 'Recordkeeper Name', 'NSCC Firm Name',
+                       'Estimated Funding Date', 'Estimated Funding Amount', 'Mapping from Mutual Fund?']
+    
+    # Only include default columns that actually exist in the data
+    default_columns = [col for col in default_columns if col in all_columns]
+    
+    selected_columns = st.multiselect(
+        "Select columns to display",
+        options=all_columns,
+        default=default_columns
+    )
+    
+    # Sort options
+    sort_options = ['Plan Name', 'Request Date', 'Status Detail', 'Estimated Funding Date', 'Estimated Funding Amount']
+    sort_options = [col for col in sort_options if col in df_filtered.columns]
+    
+    if sort_options:
+        sort_col = st.selectbox("Sort by", options=sort_options, index=0)
+        sort_order = st.radio("Sort order", options=["Ascending", "Descending"], horizontal=True)
         
-        with st.expander("View and Filter Raw Data"):
-            # Select columns to display
-            all_columns = df_filtered.columns.tolist()
-            default_columns = ['Plan Name', 'Fund Name', 'Request Status', 'Status Detail', 
-                               'Advisor Firm Name', 'Recordkeeper Name', 'NSCC Firm Name',
-                               'Estimated Funding Date', 'Estimated Funding Amount', 'Mapping from Mutual Fund?']
-            
-            # Only include default columns that actually exist in the data
-            default_columns = [col for col in default_columns if col in all_columns]
-            
-            selected_columns = st.multiselect(
-                "Select columns to display",
-                options=all_columns,
-                default=default_columns
+        # Store original dataframe for sorting
+        sorting_df = df_filtered.copy()
+        
+        # Sort the dataframe - Important: Sort before formatting for display
+        ascending = sort_order == "Ascending"
+        
+        # Handle different column types for sorting
+        if sort_col == 'Estimated Funding Amount':
+            # Explicitly sort numeric values
+            sorted_df = sorting_df.sort_values(sort_col, ascending=ascending)
+        elif pd.api.types.is_numeric_dtype(sorting_df[sort_col]):
+            # Sort other numeric columns
+            sorted_df = sorting_df.sort_values(sort_col, ascending=ascending)
+        elif sort_col.endswith('Date') and pd.api.types.is_datetime64_dtype(sorting_df[sort_col]):
+            # For date columns, handle NaT values (put them at the end)
+            sorted_df = sorting_df.sort_values(sort_col, ascending=ascending, na_position='last')
+        else:
+            # For text columns
+            sorted_df = sorting_df.sort_values(sort_col, ascending=ascending)
+    else:
+        sorted_df = df_filtered
+    
+    # Prepare display dataframe
+    if selected_columns:
+        display_df = sorted_df[selected_columns].copy()
+    else:
+        display_df = sorted_df.copy()
+    
+    # Format columns for display AFTER sorting
+    for col in display_df.columns:
+        if pd.api.types.is_datetime64_dtype(display_df[col]):
+            display_df[col] = display_df[col].dt.strftime('%Y-%m-%d')
+        elif col == 'Estimated Funding Amount' and col in display_df.columns:
+            display_df[col] = display_df[col].apply(
+                lambda x: f"${x:,.2f}" if pd.notna(x) and x > 0 else "$0.00"
             )
-            
-            # Sort options
-            sort_options = ['Plan Name', 'Request Date', 'Status Detail', 'Estimated Funding Date', 'Estimated Funding Amount']
-            sort_options = [col for col in sort_options if col in df_filtered.columns]
-            
-            if sort_options:
-                sort_col = st.selectbox("Sort by", options=sort_options, index=0)
-                sort_order = st.radio("Sort order", options=["Ascending", "Descending"], horizontal=True)
-                
-                # Sort the dataframe
-                ascending = sort_order == "Ascending"
-                if pd.api.types.is_numeric_dtype(df_filtered[sort_col]):
-                    # Sort numeric columns normally
-                    sorted_df = df_filtered.sort_values(sort_col, ascending=ascending)
-                elif sort_col.endswith('Date') and pd.api.types.is_datetime64_dtype(df_filtered[sort_col]):
-                    # For date columns, handle NaT values (put them at the end)
-                    if ascending:
-                        sorted_df = df_filtered.sort_values(sort_col, ascending=True, na_position='last')
-                    else:
-                        sorted_df = df_filtered.sort_values(sort_col, ascending=False, na_position='last')
-                else:
-                    # For other columns (like text), sort normally
-                    sorted_df = df_filtered.sort_values(sort_col, ascending=ascending)
-            else:
-                sorted_df = df_filtered
-            
-            if selected_columns:
-                display_df = sorted_df[selected_columns].copy()
-            else:
-                display_df = sorted_df.copy()
-            
-            # Format date columns for display
-            for col in display_df.columns:
-                if pd.api.types.is_datetime64_dtype(display_df[col]):
-                    display_df[col] = display_df[col].dt.strftime('%Y-%m-%d')
-                elif col == 'Estimated Funding Amount' and col in display_df.columns:
-                    display_df[col] = display_df[col].apply(
-                        lambda x: f"${x:,.2f}" if pd.notna(x) and x > 0 else "$0.00"
-                    )
-            
-            st.dataframe(display_df)
-            
-            # Download option
-            csv = df_filtered.to_csv(index=False).encode('utf-8')
-            st.download_button(
-                label="Download filtered data as CSV",
-                data=csv,
-                file_name=f"american_century_boardingpass_{datetime.now().strftime('%Y%m%d')}.csv",
-                mime="text/csv"
-            )
+    
+    st.dataframe(display_df)
+    
+    # Download option - use the original data (not the formatted version) for the CSV
+    csv = sorted_df.to_csv(index=False).encode('utf-8')
+    st.download_button(
+        label="Download filtered data as CSV",
+        data=csv,
+        file_name=f"american_century_boardingpass_{datetime.now().strftime('%Y%m%d')}.csv",
+        mime="text/csv"
+    )
     
     # Show instructions if no file uploaded
 else:

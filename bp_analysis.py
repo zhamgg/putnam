@@ -615,7 +615,7 @@ with st.expander("View and Filter Raw Data"):
     )
     
     # Show instructions if no file uploaded
-else:
+    else:
     st.info("Please upload the boardingpass Excel file to begin analysis.")
     
     st.markdown("""

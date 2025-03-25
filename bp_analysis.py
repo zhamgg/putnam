@@ -542,16 +542,16 @@ if uploaded_file is not None:
             
             # Create a sankey diagram of status progression
             # status_order = [
-                'Awaiting Signature', 
-                'Account Setup', 
-                'Ready to Trade'
+               # 'Awaiting Signature', 
+               # 'Account Setup', 
+               # 'Ready to Trade'
             ]
             
             # Count plans in each status
             # status_counts = {}
             # for status in status_order:
-                count = len(df_filtered[df_filtered['Status Detail'].str.contains(status, case=False, na=False)])
-                status_counts[status] = count
+               # count = len(df_filtered[df_filtered['Status Detail'].str.contains(status, case=False, na=False)])
+                # status_counts[status] = count
             
             # Create sankey diagram data
             # source = []

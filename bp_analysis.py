@@ -536,55 +536,6 @@ if uploaded_file is not None:
             else:
                 st.info("NSCC Firm data not available")
         
-        # Add status transition flow if we have detailed status
-        # if 'Status Detail' in df_filtered.columns:
-            #st.markdown("<div class='section-header'>Status Progression</div>", unsafe_allow_html=True)
-            
-            # Create a sankey diagram of status progression
-            # status_order = [
-               # 'Awaiting Signature', 
-               # 'Account Setup', 
-               # 'Ready to Trade'
-            ]
-            
-            # Count plans in each status
-            # status_counts = {}
-            # for status in status_order:
-               # count = len(df_filtered[df_filtered['Status Detail'].str.contains(status, case=False, na=False)])
-                # status_counts[status] = count
-            
-            # Create sankey diagram data
-            # source = []
-            # target = []
-            # value = []
-            
-            # Assume progression from one status to the next
-            #for i in range(len(status_order)-1):
-                # source.append(i)
-                # target.append(i+1)
-                # The value is the minimum of the current status count and the next one
-                # This is simplified - in a real app you'd track actual plan transitions
-                # value.append(min(status_counts[status_order[i]], status_counts[status_order[i+1]]))
-            
-            # Create the figure
-            # flow_fig = go.Figure(data=[go.Sankey(
-                # node = dict(
-                    # pad = 15,
-                    # thickness = 20,
-                    # line = dict(color = "black", width = 0.5),
-                    # label = status_order,
-                    # color = "blue"
-                ),
-                # link = dict(
-                    source = source,
-                    target = target,
-                    value = value
-                )
-            )])
-            
-            # flow_fig.update_layout(title_text="Plan Status Progression", font_size=12)
-            
-            # st.plotly_chart(flow_fig, use_container_width=True)
         
         # Raw data explorer
         st.markdown("<div class='section-header'>Data Explorer</div>", unsafe_allow_html=True)
